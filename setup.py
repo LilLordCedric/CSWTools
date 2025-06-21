@@ -1,28 +1,22 @@
-from setuptools import setup, Extension
-import sys
-import platform
+from setuptools import setup, find_packages
 
-# Set compiler flags based on the platform
-extra_compile_args = []
-extra_link_args = []
-
-if platform.system() == "Windows":
-    extra_compile_args = ['/openmp']
-elif platform.system() == "Linux" or platform.system() == "Darwin":
-    extra_compile_args = ['-fopenmp']
-    extra_link_args = ['-fopenmp']
+with open("README.md", "r", encoding="utf-8") as fh:
+    long_description = fh.read()
 
 setup(
-    name="yggdrasil",
-    version="0.1",
-    py_modules=['yggdrasil'],
-    ext_modules=[
-        Extension(
-            'yggdrasil_c',
-            sources=['yggdrasil_c.c'],
-            extra_compile_args=extra_compile_args,
-            extra_link_args=extra_link_args,
-        ),
+    name="csw",
+    version="0.1.0",
+    author="Cedric Sascha wagner",
+    author_email="cedric.sascha.wagner@outlook.de",
+    description="A flexible tree-like data structure for Python",
+    long_description=long_description,
+    long_description_content_type="text/markdown",
+    url="https://github.com/yourusername/csw",  # Replace with actual repository URL if available
+    packages=find_packages(),
+    classifiers=[
+        "Programming Language :: Python :: 3",
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: OS Independent",
     ],
-    install_requires=[],
+    python_requires=">=3.6",
 )
