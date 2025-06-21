@@ -7,7 +7,7 @@ A flexible tree-like data structure for Python that extends the built-in diction
 You can install the package via pip:
 
 ```bash
-pip install csw
+pip install cswtools
 ```
 
 ## Features
@@ -29,7 +29,7 @@ pip install csw
 ### Basic Usage
 
 ```python
-from csw import Yggdrasil
+from cswtools import Yggdrasil
 
 # Create a new tree
 tree = Yggdrasil()
