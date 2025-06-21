@@ -4,7 +4,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setup(
-    name="csw",
+    name="cswtools",
     version="0.1.0",
     author="Cedric Sascha wagner",
     author_email="cedric.sascha.wagner@outlook.de",
