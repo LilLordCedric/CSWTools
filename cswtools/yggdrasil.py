@@ -1,3 +1,6 @@
+import pandas as pd
+import sqlite3
+
 class Yggdrasil(dict):
     def __init__(self, leaf_behavior='overwrite'):
         """
@@ -111,8 +114,77 @@ class Yggdrasil(dict):
             self[key] = value
 
     def add_fiber(self, fiber):
-        sprout = fiber.pop(0)
-        self[sprout] = fiber
+        """
+        Add a fiber (path) to the tree.
+
+        Args:
+            fiber: A list-like object or pandas Series representing a path in the tree.
+                  The first element is the root node, and subsequent elements form the path.
+        """
+        # Convert pandas Series to list if necessary
+        if isinstance(fiber, pd.Series):
+            fiber = fiber.tolist()
+
+        # Make a copy to avoid modifying the original
+        fiber_copy = fiber.copy() if hasattr(fiber, 'copy') else list(fiber)
+
+        sprout = fiber_copy.pop(0)
+        self[sprout] = fiber_copy
+
+    @classmethod
+    def from_dataframe(cls, df, leaf_behavior='overwrite'):
+        """
+        Create a new Yggdrasil tree from a pandas DataFrame.
+
+        Each row in the DataFrame will be added as a fiber to the tree.
+
+        Args:
+            df (pandas.DataFrame): The DataFrame to convert to a tree
+            leaf_behavior (str or callable): How to handle duplicate leaf nodes
+                                            (passed to Yggdrasil constructor)
+
+        Returns:
+            Yggdrasil: A new Yggdrasil tree containing the data from the DataFrame
+        """
+        tree = cls(leaf_behavior=leaf_behavior)
+
+        # Iterate through each row in the DataFrame
+        for _, row in df.iterrows():
+            # Add the row as a fiber to the tree
+            tree.add_fiber(row)
+
+        return tree
+
+    @classmethod
+    def from_sql(cls, query, connection, leaf_behavior='overwrite'):
+        """
+        Create a new Yggdrasil tree from a SQL query.
+
+        Executes the query and converts the result to a DataFrame,
+        then creates a tree from the DataFrame.
+
+        Args:
+            query (str): The SQL query to execute
+            connection: A database connection object (sqlite3.Connection, 
+                       psycopg2.connection, etc.) or a connection string
+            leaf_behavior (str or callable): How to handle duplicate leaf nodes
+                                            (passed to Yggdrasil constructor)
+
+        Returns:
+            Yggdrasil: A new Yggdrasil tree containing the data from the query result
+        """
+        # Handle different types of connections
+        if isinstance(connection, str):
+            # Assume it's a SQLite connection string
+            conn = sqlite3.connect(connection)
+            df = pd.read_sql_query(query, conn)
+            conn.close()
+        else:
+            # Assume it's an existing connection object
+            df = pd.read_sql_query(query, connection)
+
+        # Create a tree from the DataFrame
+        return cls.from_dataframe(df, leaf_behavior=leaf_behavior)
 
     def print_tree(self, prefix="", is_root=True):
         """
