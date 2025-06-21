@@ -11,7 +11,7 @@ setup(
     description="A flexible tree-like data structure for Python",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/yourusername/csw",  # Replace with actual repository URL if available
+    url="https://github.com/LilLordCedric/CSWTools",
     packages=find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",
